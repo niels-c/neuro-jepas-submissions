@@ -22,7 +22,7 @@ NUM_LAYERS = 32
 NUM_CLASSES = 1000
 REPO_ID = "niels-c/vith14_untrained_linhead"
 FILENAME = "vith14_untrained_linhead.safetensors"
-HASH = "ad45a01caa35a8117c0c6880e064f95245c58613b260a76424a9a7f0c21853e7"
+REVISION = "11a552a822cce283537351d091130152261c7d59"
 
 # Configuration of facebook/ijepa_vith14_1k
 CONFIG = IJepaConfig(
@@ -57,7 +57,7 @@ def load_model() -> nn.Module:
         nn.Module: A Sequential of "backbone", the encoder whose layer fc is the linear head (logits), in eval mode.
     """
 
-    weights = load_file(hf_hub_download(repo_id=REPO_ID, filename=FILENAME, revision=HASH))
+    weights = load_file(hf_hub_download(repo_id=REPO_ID, filename=FILENAME, revision=REVISION))
     backbone = IJepaClassifier(CONFIG)
     backbone.load_state_dict(weights)
     return nn.Sequential(OrderedDict(backbone=backbone)).eval()

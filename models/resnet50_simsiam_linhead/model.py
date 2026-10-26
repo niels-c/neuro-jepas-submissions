@@ -22,7 +22,7 @@ from torch import nn
 
 REPO_ID = "niels-c/resnet50_simsiam_linhead"
 FILENAME = "resnet50_simsiam_linhead.safetensors"
-HASH = "d8c5d6baa2c6483fa29dd593d345a48c2a50a78a4e11e2a196198d905c991562"
+REVISION = "45b7f0fcac60d21f817e75af6057765b5281d70b"
 
 
 def load_model():
@@ -33,7 +33,7 @@ def load_model():
         nn.Module: A Sequential of "backbone", a ResNet-50 whose layer fc is the linear head (logits), in eval mode.
     """
 
-    weights = load_file(hf_hub_download(repo_id=REPO_ID, filename=FILENAME, revision=HASH))
+    weights = load_file(hf_hub_download(repo_id=REPO_ID, filename=FILENAME, revision=REVISION))
     backbone = torchvision.models.resnet50(weights=None)
     backbone.load_state_dict(weights)
     return nn.Sequential(OrderedDict(backbone=backbone)).eval()
