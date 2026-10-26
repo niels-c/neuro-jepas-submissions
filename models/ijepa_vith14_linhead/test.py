@@ -7,5 +7,5 @@ import brainscore_vision
 
 
 def test_has_identifier():
-    model = brainscore_vision.get_model("ijepa_vith14_linhead")
+    model = brainscore_vision.load_model("ijepa_vith14_linhead")
     assert model.identifier == "ijepa_vith14_linhead"
