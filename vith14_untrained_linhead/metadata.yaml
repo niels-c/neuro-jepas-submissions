@@ -1,0 +1,42 @@
+models:
+    vith14_untrained_linhead:
+      model:
+        display_name: vith14_untrained_linhead
+        architecture:
+          family: Transformer
+          description: I-JEPA ViT-H/14, standard torchvision architecture, untrained backbone
+        parameter_count: 632043240
+        parameter_count_exact: true
+        supervision:
+          type: self-supervised+linear_head
+          description: Self-supervised learning plus fine-tuning on ImageNet-1K
+        input_resolution:
+          channels: 3
+          height: 224
+          width: 224
+        recurrent: false
+      training:
+        learning_rate: null
+        loss: l2distance
+        objective: l2distance
+        preprocessing: null
+        process: null
+      lineage:
+        base_models:
+        - identifier: ViT-H/14
+          name: ViT-H/14
+          relationship: variant_of
+      legacy:
+        architecture: DCNN, Transformer
+        model_family: JEPA, vit
+        total_parameter_count: 632043240
+        trainable_parameter_count: 632043240
+        total_layers: 260
+        trainable_layers: 195
+        model_size_mb: 2520.0
+        training_dataset: null
+        task_specialization: null
+        brainscore_link: null
+        huggingface_link: https://huggingface.co/niels-c/vith14_untrained_linhead
+        extra_notes: null
+        runnable: true

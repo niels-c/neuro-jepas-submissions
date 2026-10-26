@@ -1,0 +1,42 @@
+models:
+    resnet50_untrained_linhead:
+      model:
+        display_name: resnet50_untrained_linhead
+        architecture:
+          family: convolutional_neural_network
+          description: CNN (ResNet-50), standard torchvision architecture
+        parameter_count: 25557032
+        parameter_count_exact: true
+        supervision:
+          type: supervised
+          description: Supervised learning on ImageNet-1K
+        input_resolution:
+          channels: 3
+          height: 224
+          width: 224
+        recurrent: false
+      training:
+        learning_rate: null
+        loss: cross-entropy
+        objective: cross-entropy
+        preprocessing: null
+        process: null
+      lineage:
+        base_models:
+        - identifier: resnet-50
+          name: ResNet-50
+          relationship: variant_of
+      legacy:
+        architecture: DCNN
+        model_family: resnet
+        total_parameter_count: 25610205
+        trainable_parameter_count: 25557032
+        total_layers: 107
+        trainable_layers: 54
+        model_size_mb: 102.6
+        training_dataset: ImageNet-1K
+        task_specialization: null
+        brainscore_link: null
+        huggingface_link: https://huggingface.co/niels-c/resnet50_untrained_linhead
+        extra_notes: null
+        runnable: true
