@@ -9,7 +9,10 @@ import math
 from collections import OrderedDict
 
 import torch
-from brainscore_vision.model_helpers.activations.pytorch import PytorchWrapper, load_preprocess_images
+from brainscore_vision.model_helpers.activations.pytorch import (
+    PytorchWrapper,
+    load_preprocess_images,
+)
 from brainscore_vision.model_helpers.check_submission import check_models
 from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
@@ -48,7 +51,9 @@ class IJepaClassifier(IJepaModel):
         self.fc = nn.Linear(config.hidden_size, NUM_CLASSES)
 
     def forward(self, images: torch.Tensor) -> torch.Tensor:
-        return self.fc(super().forward(pixel_values=images).last_hidden_state.mean(dim=1))
+        return self.fc(
+            super().forward(pixel_values=images).last_hidden_state.mean(dim=1)
+        )
 
 
 def load_model() -> nn.Module:
@@ -59,7 +64,9 @@ def load_model() -> nn.Module:
         nn.Module: A Sequential of "backbone", the encoder whose layer fc is the linear head (logits), in eval mode.
     """
 
-    weights = load_file(hf_hub_download(repo_id=REPO_ID, filename=FILENAME, revision=REVISION))
+    weights = load_file(
+        hf_hub_download(repo_id=REPO_ID, filename=FILENAME, revision=REVISION)
+    )
     backbone = IJepaClassifier(CONFIG)
     backbone.load_state_dict(weights)
     return nn.Sequential(OrderedDict(backbone=backbone)).eval()
@@ -76,7 +83,9 @@ class TokenGrid(nn.Module):
 
     def forward(self, tokens: torch.Tensor) -> torch.Tensor:
         side = math.isqrt(tokens.shape[1])
-        return tokens.transpose(1, 2).reshape(tokens.shape[0], tokens.shape[2], side, side)
+        return tokens.transpose(1, 2).reshape(
+            tokens.shape[0], tokens.shape[2], side, side
+        )
 
 
 def add_token_grids(model: nn.Module) -> None:
@@ -105,7 +114,9 @@ def get_model(name):
     add_token_grids(model)
     # I-JEPA was pretrained with ImageNet mean and std, the default of load_preprocess_images.
     preprocessing = functools.partial(load_preprocess_images, image_size=image_size)
-    wrapper = PytorchWrapper(identifier="ijepa_vith14_linhead", model=model, preprocessing=preprocessing)
+    wrapper = PytorchWrapper(
+        identifier="ijepa_vith14_linhead", model=model, preprocessing=preprocessing
+    )
     wrapper.image_size = image_size
     return wrapper
 
