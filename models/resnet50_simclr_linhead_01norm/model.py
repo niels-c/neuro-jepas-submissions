@@ -1,6 +1,8 @@
 """
 Resnet-50 SimCLR model for Brain-Score submission.
 
+This model uses 0-1 normalization.
+
 Checkpoint from https://github.com/AndrewAtanov/simclr-pytorch.
 """
 
@@ -45,21 +47,21 @@ def load_model():
 
 
 def get_model(name):
-    assert name == "resnet50_simclr_linhead"
+    assert name == "resnet50_simclr_linhead_01norm"
     image_size = 224
     model = load_model()  # head at backbone.fc, logits
     preprocessing = functools.partial(
         load_preprocess_images, image_size=image_size, normalize_mean=(0,0,0), normalize_std=(1,1,1)
     )
     wrapper = PytorchWrapper(
-        identifier="resnet50_simclr_linhead", model=model, preprocessing=preprocessing
+        identifier="resnet50_simclr_linhead_01norm", model=model, preprocessing=preprocessing
     )
     wrapper.image_size = image_size
     return wrapper
 
 
 def get_layers(name):
-    assert name == "resnet50_simclr_linhead"
+    assert name == "resnet50_simclr_linhead_01norm"
     return [
         "backbone.conv1",
         "backbone.layer1",
