@@ -26,7 +26,7 @@ from torch import nn
 
 REPO_ID = "niels-c/resnet50_cpc_linhead"
 FILENAME = "resnet50_cpc_linhead.safetensors"
-REVISION = ""
+REVISION = "5c6a415cb2c6136dce8164440ce9052dbf636c86"
 
 
 def load_model():

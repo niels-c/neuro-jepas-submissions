@@ -23,7 +23,7 @@ from torch import nn
 
 REPO_ID = "niels-c/resnet50_supervised_linhead"
 FILENAME = "resnet50_supervised_linhead.safetensors"
-REVISION = ""
+REVISION = "0912d7d9c268b0343a13c3838fb3b84cf1cec09f"
 
 
 def load_model():

@@ -19,7 +19,7 @@ NUM_CLASSES = 1000
 IMAGE_SIZE = 224
 REPO_ID = "niels-c/vith14_supervised_linhead"
 FILENAME = "vith14_supervised_linhead.safetensors"
-REVISION = "11a552a822cce283537351d091130152261c7d59"
+REVISION = "bc432d274f592e3212639f41a1b69af2c83c522d"
 
 class ViTH(VisionTransformer):
     """
