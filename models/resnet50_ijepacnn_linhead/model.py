@@ -17,16 +17,9 @@ from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
 from torch import nn
 
-# Attention: It is important, that the wrapper identifier is unique per model!
-# The results will otherwise be the same due to brain-scores internal result caching mechanism.
-# Please load your pytorch model for usage in CPU. There won't be GPUs available for scoring your model.
-# If the model requires a GPU, contact the brain-score team directly.
-
-
 
 REPO_ID = "niels-c/resnet50_ijepacnn_linhead"
 FILENAME = "resnet50_ijepacnn_linhead.safetensors"
-REVISION = "cbacb34a220ade881f95c8dcd3de211006a10da2"
 
 
 def load_model():
@@ -38,7 +31,7 @@ def load_model():
     """
 
     weights = load_file(
-        hf_hub_download(repo_id=REPO_ID, filename=FILENAME, revision=REVISION)
+        hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
     )
     backbone = torchvision.models.resnet50(weights=None)
     backbone.load_state_dict(weights)
