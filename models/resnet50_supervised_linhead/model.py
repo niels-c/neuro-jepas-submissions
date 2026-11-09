@@ -15,7 +15,6 @@ from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
 from torch import nn
 
-
 REPO_ID = "niels-c/resnet50_supervised_linhead"
 FILENAME = "resnet50_supervised_linhead.safetensors"
 
@@ -28,9 +27,7 @@ def load_model():
         nn.Module: A Sequential of "backbone", a ResNet-50 whose layer fc is the linear head (logits), in eval mode.
     """
 
-    weights = load_file(
-        hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
-    )
+    weights = load_file(hf_hub_download(repo_id=REPO_ID, filename=FILENAME))
     backbone = torchvision.models.resnet50(weights=None)
     backbone.load_state_dict(weights)
     return nn.Sequential(OrderedDict(backbone=backbone)).eval()
@@ -42,7 +39,9 @@ def get_model(name):
     model = load_model()  # head at backbone.fc, logits
     preprocessing = functools.partial(load_preprocess_images, image_size=image_size)
     wrapper = PytorchWrapper(
-        identifier="resnet50_supervised_linhead", model=model, preprocessing=preprocessing
+        identifier="resnet50_supervised_linhead",
+        model=model,
+        preprocessing=preprocessing,
     )
     wrapper.image_size = image_size
     return wrapper

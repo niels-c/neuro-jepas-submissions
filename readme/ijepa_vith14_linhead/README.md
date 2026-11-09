@@ -86,21 +86,31 @@ class IJepaClassifier(IJepaModel):
         self.fc = nn.Linear(config.hidden_size, NUM_CLASSES)
 
     def forward(self, images: torch.Tensor) -> torch.Tensor:
-        return self.fc(super().forward(pixel_values=images).last_hidden_state.mean(dim=1))
+        return self.fc(
+            super().forward(pixel_values=images).last_hidden_state.mean(dim=1)
+        )
 
 
 model = IJepaClassifier(CONFIG)
-model.load_state_dict(load_file(hf_hub_download("niels-c/ijepa_vith14_linhead", "ijepa_vith14_linhead.safetensors")))
+model.load_state_dict(
+    load_file(
+        hf_hub_download(
+            "niels-c/ijepa_vith14_linhead", "ijepa_vith14_linhead.safetensors"
+        )
+    )
+)
 model.eval()
 
 # Evaluation transform of the linear probe
-preprocess = v2.Compose([
-    v2.ToImage(),
-    v2.Resize(256, antialias=True),
-    v2.CenterCrop(224),
-    v2.ToDtype(torch.float32, scale=True),
-    v2.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
-])
+preprocess = v2.Compose(
+    [
+        v2.ToImage(),
+        v2.Resize(256, antialias=True),
+        v2.CenterCrop(224),
+        v2.ToDtype(torch.float32, scale=True),
+        v2.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+    ]
+)
 
 image = preprocess(Image.open("image.jpg").convert("RGB")).unsqueeze(0)
 with torch.no_grad():

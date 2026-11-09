@@ -5,20 +5,24 @@ Model definition of a supervised ViT-H/14 model for submission to Brain-Score.
 import functools
 import math
 from collections import OrderedDict
-from pathlib import Path
 
 import torch
-from brainscore_vision.model_helpers.activations.pytorch import PytorchWrapper, load_preprocess_images
+from brainscore_vision.model_helpers.activations.pytorch import (
+    PytorchWrapper,
+    load_preprocess_images,
+)
 from brainscore_vision.model_helpers.check_submission import check_models
+from huggingface_hub import hf_hub_download
+from safetensors.torch import load_file
 from timm.models.vision_transformer import VisionTransformer
 from torch import nn
-
 
 NUM_LAYERS = 32
 NUM_CLASSES = 1000
 IMAGE_SIZE = 224
 REPO_ID = "niels-c/vith14_supervised_linhead"
 FILENAME = "vith14_supervised_linhead.safetensors"
+
 
 class ViTH(VisionTransformer):
     """
@@ -56,9 +60,7 @@ def load_model() -> nn.Module:
         nn.Module: A Sequential of "backbone", the encoder whose layer fc is the linear head (logits), in eval mode.
     """
 
-    weights = load_file(
-        hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
-    )
+    weights = load_file(hf_hub_download(repo_id=REPO_ID, filename=FILENAME))
     backbone = ViTH()
     backbone.load_state_dict(weights)
     return nn.Sequential(OrderedDict(backbone=backbone)).eval()
@@ -76,7 +78,9 @@ class TokenGrid(nn.Module):
     def forward(self, tokens: torch.Tensor) -> torch.Tensor:
         patches = tokens[:, 1:]
         side = math.isqrt(patches.shape[1])
-        return patches.transpose(1, 2).reshape(patches.shape[0], patches.shape[2], side, side)
+        return patches.transpose(1, 2).reshape(
+            patches.shape[0], patches.shape[2], side, side
+        )
 
 
 def add_token_grids(model: nn.Module) -> None:
@@ -104,7 +108,9 @@ def get_model(name):
     add_token_grids(model)
     # The weights were trained with the ImageNet mean and std, the default of load_preprocess_images.
     preprocessing = functools.partial(load_preprocess_images, image_size=IMAGE_SIZE)
-    wrapper = PytorchWrapper(identifier="vith14_supervised_linhead", model=model, preprocessing=preprocessing)
+    wrapper = PytorchWrapper(
+        identifier="vith14_supervised_linhead", model=model, preprocessing=preprocessing
+    )
     wrapper.image_size = IMAGE_SIZE
     return wrapper
 

@@ -50,7 +50,9 @@ def get_model(name):
     model = load_model()  # head at backbone.fc, logits
     preprocessing = functools.partial(load_preprocess_images, image_size=image_size)
     wrapper = PytorchWrapper(
-        identifier="resnet50_vicreg_linhead_nlm", model=model, preprocessing=preprocessing
+        identifier="resnet50_vicreg_linhead_nlm",
+        model=model,
+        preprocessing=preprocessing,
     )
     wrapper.image_size = image_size
     return wrapper

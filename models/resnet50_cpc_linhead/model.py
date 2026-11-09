@@ -7,7 +7,7 @@ Checkpoint from https://huggingface.co/niels-c/resnet50_cpc_linhead.
 import functools
 from collections import OrderedDict
 
-import torchvision.models
+import timm
 from brainscore_vision.model_helpers.activations.pytorch import (
     PytorchWrapper,
     load_preprocess_images,
@@ -16,7 +16,6 @@ from brainscore_vision.model_helpers.check_submission import check_models
 from huggingface_hub import hf_hub_download
 from safetensors.torch import load_file
 from torch import nn
-
 
 REPO_ID = "niels-c/resnet50_cpc_linhead"
 FILENAME = "resnet50_cpc_linhead.safetensors"
@@ -30,10 +29,18 @@ def load_model():
         nn.Module: A Sequential of "backbone", a ResNet-50 whose layer fc is the linear head (logits), in eval mode.
     """
 
-    weights = load_file(
-        hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
+    weights = load_file(hf_hub_download(repo_id=REPO_ID, filename=FILENAME))
+
+    backbone = timm.create_model("resnet50", num_classes=0)
+    backbone.feature_dim = backbone.head_hidden_size
+    in_forward = isinstance(backbone, nn.Sequential) or isinstance(
+        getattr(backbone, "fc", None), nn.Identity
     )
-    backbone = torchvision.models.resnet50(weights=None)
+    backbone.fc = nn.Linear(backbone.feature_dim, 1000)
+    if not in_forward:
+        backbone.register_forward_hook(
+            lambda module, inputs, features: module.fc(features)
+        )
     backbone.load_state_dict(weights)
     return nn.Sequential(OrderedDict(backbone=backbone)).eval()
 
