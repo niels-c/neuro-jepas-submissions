@@ -31,16 +31,9 @@ def load_model():
 
     weights = load_file(hf_hub_download(repo_id=REPO_ID, filename=FILENAME))
 
-    backbone = timm.create_model("resnet50", num_classes=0)
+    backbone = timm.create_model("resnet50", num_classes=0, norm_layer="groupnorm1")
     backbone.feature_dim = backbone.head_hidden_size
-    in_forward = isinstance(backbone, nn.Sequential) or isinstance(
-        getattr(backbone, "fc", None), nn.Identity
-    )
     backbone.fc = nn.Linear(backbone.feature_dim, 1000)
-    if not in_forward:
-        backbone.register_forward_hook(
-            lambda module, inputs, features: module.fc(features)
-        )
     backbone.load_state_dict(weights)
     return nn.Sequential(OrderedDict(backbone=backbone)).eval()
 
