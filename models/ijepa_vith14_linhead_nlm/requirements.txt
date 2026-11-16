@@ -1,5 +1,0 @@
-transformers>=5.19.0
-huggingface_hub
-safetensors
-torch
-torchvision

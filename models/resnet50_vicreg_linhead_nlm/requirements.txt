@@ -1,4 +1,0 @@
-torch
-torchvision
-huggingface_hub
-safetensors
