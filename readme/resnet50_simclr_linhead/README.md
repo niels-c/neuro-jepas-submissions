@@ -31,7 +31,7 @@ Classifying images into the 1000 ImageNet-1k classes, and extracting the activat
 
 ### Downstream Use
 
-The model was built as a submission to [Brain-Score](https://www.brain-score.org/vision/), where it is scored as the plugin `resnet50_simclr_linhead` on neural (V1, V2, V4, IT) and behavioral benchmarks. It is part of the neuro-jepas project, which compares joint-embedding predictive architectures (JEPAs) and other self-supervised models on their similarity to the brain.
+The model was built as a submission to [Brain-Score](https://www.brain-score.org/vision/), where it is scored as the plugin `resnet50_simclr_linhead_01norm` on neural (V1, V2, V4, IT) and behavioral benchmarks. An earlier plugin, `resnet50_simclr_linhead`, normalized the inputs with the ImageNet mean and std, which this backbone does not expect, so its scores do not reflect the model. It is part of the neuro-jepas project, which compares joint-embedding predictive architectures (JEPAs) and other self-supervised models on their similarity to the brain.
 
 ### Out-of-Scope Use
 
@@ -89,12 +89,12 @@ with torch.no_grad():
 print(logits.argmax(dim=1))
 ```
 
-To score the model on Brain-Score, use the plugin `resnet50_simclr_linhead` from [neuro-jepas-submissions](https://github.com/niels-c/neuro-jepas-submissions/tree/main/models/resnet50_simclr_linhead), which pins the revision of this checkpoint:
+To score the model on Brain-Score, use the plugin `resnet50_simclr_linhead_01norm` from [neuro-jepas-submissions](https://github.com/niels-c/neuro-jepas-submissions/tree/main/models/resnet50_simclr_linhead_01norm), which pins the revision of this checkpoint and feeds it pixel values in [0, 1]:
 
 ```python
 import brainscore_vision
 
-model = brainscore_vision.load_model("resnet50_simclr_linhead")
+model = brainscore_vision.load_model("resnet50_simclr_linhead_01norm")
 ```
 
 ## Training Details
@@ -161,7 +161,7 @@ ResNet-50 as in `torchvision.models.resnet50` (bottleneck blocks in 4 stages of 
 
 Backbone: self-supervised SimCLR objective. Head: cross-entropy on ImageNet-1k labels.
 
-Brain-Score commitments of the plugin `resnet50_simclr_linhead`: the recorded layers are `backbone.conv1`, `backbone.layer1`, `backbone.layer2`, `backbone.layer3`, `backbone.layer4`, `backbone.fc`, and `backbone.fc` is the behavioral readout. The regions are committed to these layers:
+Brain-Score commitments of the plugin `resnet50_simclr_linhead_01norm`: the recorded layers are `backbone.conv1`, `backbone.layer1`, `backbone.layer2`, `backbone.layer3`, `backbone.layer4`, `backbone.fc`, and `backbone.fc` is the behavioral readout. The regions are committed to these layers:
 
 | Region | Layer |
 |---|---|
